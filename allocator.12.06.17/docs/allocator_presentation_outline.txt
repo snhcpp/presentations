@@ -1,0 +1,75 @@
+Exploring std::allocator 12/6/17
+
+# introduction
+
+- cppreference and friends is not enough
+-- false sense of scale
+-- "hits easy button"
+
+- writing an allocator for your own custom container is one thing compared to
+  writing an allocator that can work with any STL container, correctly.
+
+- expecting an easy transition to more other allocator types, I opted to build a policy
+  based allocator that was accepted a metrics template policy
+
+- aim was to create a generic interface for recording things. static member functions would
+  accept all interesting arguments the allocator could generate, creating opportunities for:
+-- counting allocation/deallocation
+-- tracing memory address blocks
+-- time based alloc/dealloc metrics. histograms
+-- ...
+- it's a static policy class that also abstracts away the alloc/dealloc of it's own context
+  so you can keep state. context pointer is passed to each policy member function.
+* I inadvertadely discovered the design pattern used by allocator_traits
+
+# challenges
+
+- I didn't know I could use allocator_traits. That this is the interface STL containers
+  use to talk to allocators
+-- drastically reduces the amount of could you must write
+-- btw you should use pointer_traits with that too
+- incomplete examples abound (google "are you feeling lucky?")
+- template template hell
+- dealing with rebind, which is used to create a new allocator of this class but for
+  a different storage type. BTW, it expects one template argument.
+
+# accomplishments
+
+- standalone, stateful, policy based allocator that works outside of an STL container
+- STL container usage ... has room for improvement
+
+# second pass
+- more research. CppCon bloomberg videos told a great war story, but actual implementation
+  was lacking. It was either too high level or too low level.
+- two fantasic resources
+-- https://howardhinnant.github.io/allocator_boilerplate.html
+-- CppCon 2017: Bob Steagall “How to Write a Custom Allocator”
+---- https://www.youtube.com/watch?v=kSWfushlvB8
+
+- by focusing my searching on C++11 allocators I deprived myself of the research done in C++17, which included a history of allocators.
+-- turns out the improvements in allocator_traits in incremental, what makes 17 so
+   special is the introduction of polymorphic memory resources.
+- Bob Steagall's presentation starts with allocators from the beginning and how they    changed in 11 and 17. By far the best "this is what matters, why, and how to do it" resource
+I've found.
+
+- new attempt is similar to the old, but without the template flexibility and actually uses
+  the allocator_traits
+  
+# accomplishments
+- simple counting bytes alloc/dealloc allocator
+- way less code!
+- stateful
+- works in STL vector! (only one I had time to test) 
+ 
+# unresolved
+- can't seem to see a difference when POCCA or POCMA is enabled
+-- how my context object is maintained may be the problem
+-- just plain ran out of time
+
+# TODO
+- understand how STL containers actually use allocator_traits (read the code)
+- read the standard more thouroughly
+-- allocator section start 17.6.3.5
+-- http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2011/n3242.pdf
+
+# .END
