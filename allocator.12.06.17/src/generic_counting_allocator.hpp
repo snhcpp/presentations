@@ -14,9 +14,9 @@
 // # great slide deck that walks through allocator specific
 // https://accu.org/content/conf2012/JonathanWakely-CXX11_allocators.pdf
 //
-// # C++17 How to write custom allocators
+// # Bob Steagall - CppCon2017 How to write custom allocators
 // -- https://www.youtube.com/watch?v=kSWfushlvB8
-// -- "We've all heard heroic tales of other people this" - John McFarlane CppCon 2017
+// -- "We've all heard heroic tales of other people doing this" - John McFarlane CppCon 2017
 // -- while focused on C++17, it does a survey from the beginning and explains
 //    all implementations. the C++17 portion is at the very very end of the presentation.
 //    by far, the best allocator presentation I have found, better than the bloomberg ones.
@@ -76,7 +76,7 @@ class CountingAllocatorPolicy
 public:
   using value_type      = T;
   using storage_type    = size_t;
-  using storage_pointer = size_t*;
+  using storage_pointer = std::shared_ptr< storage_type >;
 
   static constexpr size_t ObjectSize = sizeof( T );
 
@@ -86,7 +86,7 @@ public:
   {
     std::cout << "creating CountingAllocatorPolicy storage for object size: " << ObjectSize
               << std::endl;
-    storage_pointer p = new storage_type;
+    storage_pointer p = std::make_shared<storage_type>();
     *p                = 0;
     return p;
   }
@@ -97,7 +97,6 @@ public:
     std::cout << "destroying CountingAllocatorPolicy storage for object size: " << ObjectSize
               << std::endl;
     std::cout << "ACCOUNTING: " << *p << " objects with size " << ObjectSize << std::endl;
-    delete p;
   }
 
   static void count( size_t n, storage_pointer p )
