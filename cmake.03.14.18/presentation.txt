@@ -1,0 +1,60 @@
+TOPIC
+
+# overview
+- why not make?
+-- handcode basically everything
+-- lisp + shell integration
+-- no framework for tooling support
+-- cross platform builds either hand crafted or use autoconf/automake
+
+- why cmake?
+-- momentum. not exactly a great reason.
+-- makes it easy to integrate code, export what it provides, and use it
+   in your project
+-- one stop shopping for cross platform development. Single language
+   instead of a collection of domain specific languages.
+-- external tools support
+-- IDE support
+-- Graphical Debugger support
+---- consider developers who use a standalone editor all the time who wish
+     to simply fire up a graphical debugger without having to hand craft
+     the project file support before being productive. You might even end
+     up writing code in the IDE...
+
+- cmake alternatives
+
+Probably, but fighting the momentum isn't worth it atm.
+
+We can do better, but that also means the "we" actually has to step up
+and do the work instead of complaining loudly about it.
+
+# language basics
+- writing to stdout
+- "types"
+- variables
+- environmental variables
+- control
+- loops
+- functions
+- macros
+
+# standalone project
+- filesystem organization
+-- standards?
+- CMakeLists.txt
+- acquiring build dependancies
+-- find_package
+-- write your own "FindMyLib.cmake"
+- defining build targets
+- running custom commands
+- "generating" the build system
+- compiling your project
+
+# multi project
+- natural extension of standalone project
+- exposing library and includes provided by sub-project
+
+# stretch goals
+- defining install actions
+- CPack packaging
+- trade offs between meta packaging and native packaging (Ubuntu/Debian) centric

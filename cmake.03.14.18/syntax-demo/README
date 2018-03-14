@@ -1,0 +1,5 @@
+these files demonstrate core language variable and control
+
+cmake -P FILE
+
+will execute them
